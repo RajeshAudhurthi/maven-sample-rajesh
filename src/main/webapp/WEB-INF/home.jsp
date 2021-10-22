@@ -12,7 +12,7 @@
 </head>
 </head>
 <body>
-<h1 align="center">Welcome to Devops World</h1>
+<h1 align="center">Welcome to DevOps World</h1>
 <h1 align="center">Rajesh Kumar</h1>
 <hr>
 <div style="text-align: center;">
