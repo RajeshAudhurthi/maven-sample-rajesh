@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone') {
+            steps {
+               git 'http://34.212.18.185/root/maven-app.git' 
+            }
+        }
+        stage('build maven') {
+            steps {
+               sh 'mvn clean package' 
+            }
+        }
+        stage('Artifacts') {
+            steps {
+               archiveArtifacts artifacts: 'target/*.war', followSymlinks: false 
+            }
+        }
+        stage('sonarqube') {
+            steps {
+                withSonarQubeEnv('sonar-token') {
+                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar'
+                } 
+            }
+        }
+    }
+    
+}

@@ -1,0 +1,58 @@
+node{
+
+   //http://localhost:8080/pipeline-syntax/globals#currentBuild
+  //Getting the  env  global varibale values
+ 
+  echo "GitHub BranhName ${env.BRANCH_NAME}"
+  echo "Jenkins Job Number ${env.BUILD_NUMBER}"
+  echo "Jenkins Node Name ${env.NODE_NAME}"
+  
+  echo "Jenkins Home ${env.JENKINS_HOME}"
+  echo "Jenkins URL ${env.JENKINS_URL}"
+  echo "JOB Name ${env.JOB_NAME}"
+    properties([
+    buildDiscarder(logRotator(numToKeepStr: '3')),
+    pipelineTriggers([
+        pollSCM('* * * * *')
+    ])
+])
+    
+    //def mvnHome = tool name: 'maven3.6.1', type: 'maven'
+    def mvnHome = tool name: 'maven3.6.1', type: 'maven'
+  stage('CheckoutCode'){
+      
+     git branch: 'master', credentialsId: '5cce856d-5e92-438d-b284-5dd624bb1305', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git' 
+  }  
+  
+  stage('Build'){
+      
+     sh "${mvnHome}/bin/mvn clean package"
+  }
+  /*
+  stage('SonarQubeReport'){
+      
+     sh "${mvnHome}/bin/mvn sonar:sonar"
+  }  
+    */
+stage('UploadArtifactIntoNexus'){
+      
+     sh "${mvnHome}/bin/mvn deploy"
+  } 
+  
+  /*
+  stage('DeployApplication'){
+      
+    sshagent(['tomcatServerCredentials']) {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.127.49.224:/opt/apache-tomcat-9.0.20/webapps/maven-web-application.war"
+} 
+  }
+  */
+  stage('SendEmailNotification'){
+      
+      emailext body: '''Build is over
+
+Regards,
+Mithun Technologies,
+9980923226.''', subject: 'Build is over', to: 'devopstrainingblr@gmail.com'
+  }
+}

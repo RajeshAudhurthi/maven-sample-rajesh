@@ -1,0 +1,55 @@
+node{
+
+ echo "GitHub BranhName ${env.BRANCH_NAME}"
+  echo "Jenkins Job Number ${env.BUILD_NUMBER}"
+  echo "Jenkins Node Name ${env.NODE_NAME}"
+  
+  echo "Jenkins Home ${env.JENKINS_HOME}"
+  echo "Jenkins URL ${env.JENKINS_URL}"
+echo "JOB Name ${env.JOB_NAME}"
+
+properties([
+       buildDiscarder(logRotator(numToKeepStr: '2')),
+       pipelineTriggers([
+           pollSCM('* * * * *')
+       ])
+   ])
+   
+def mvnHome = tool name: 'maven3.6.1', type: 'maven'
+
+stage('CheckoutCode'){
+git branch: 'development', credentialsId: '2d363fa9-138b-41d8-ab89-0dd8706ecfb1', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+}
+/*
+stage('Build'){
+sh "${mvnHome}/bin/mvn clean package"
+}
+stage('SonarQubeReport'){
+sh "${mvnHome}/bin/mvn clean sonar:sonar"
+}
+
+stage('UploadArtifacts'){
+sh "${mvnHome}/bin/mvn deploy"
+}
+
+stage('DeployAppintoTomcat')
+{
+sshagent(['9554f0b8-eda0-486d-9d23-ce7585c32f70']) 
+{
+   sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.235.70.188:/opt/apache-tomcat-9.0.22/webapps/maven-web-application.war"
+}
+}
+
+stage('EmailNotification')
+{
+emailext body: '''Build is over
+
+Regards,
+Mithun Software Solutions,
+9980923226.
+
+''', subject: 'Build is over', to: 'devopstrainingblr@gmail.com'
+}
+*/
+
+}
