@@ -1,7 +1,0 @@
-#Maven Build--------------------------------------------------------
-java: 1.7
-akmid: 102861
-maven: apache-maven-3.3.9
-appVersion: 0.1
-pomFileLocation: 'pom.xml'
-mavenGoals: clean install -Dbranch=master
